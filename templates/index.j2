@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System Monitor Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 15px;
+            width: 300px;
+        }
+        .status {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .ram, .cpu {
+            margin: 5px 0;
+        }
+        .disk, .processes {
+            margin-top: 10px;
+            text-align: left;
+        }
+        .disk ul, .processes ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>System Monitor Dashboard</h1>
+    <div class="dashboard">
+        {% for ws in workstations %}
+        <div class="card">
+            <h3>{{ ws.name }}</h3>
+            <p class="status" style="color: {{ ws.color | default('black') }}">
+                {{ ws.status | default('Unknown') }}
+            </p>
+            <p class="ram">RAM Used: {{ ws.ram | default(0) }}%</p>
+            <p class="cpu">CPU Load: {{ ws.cpu | default(0) }}%</p>
+
+            <div class="disk">
+                <strong>Disk Usage:</strong>
+                <ul>
+                    {% for d in ws.disk %}
+                    <li>{{ d.Drive }}: {{ d.UsedPercent }}% used (Free: {{ d.FreeGB }}GB / Total: {{ d.TotalGB }}GB)</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="processes">
+                <strong>Top Processes:</strong>
+                <ul>
+                    {% for p in ws.topProcesses %}
+                    <li>{{ p.Name }} - CPU: {{ p.CPU }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
